@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Cleartext only for the local DSH server on loopback; everything else stays HTTPS-only. -->
+<!-- 鲸鲸改造：自建服务器常常是 IP:端口 + 明文 http，这里放开全局明文，
+     官方原版只对 loopback 放行（见同目录 .bak）。 -->
 <network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="false">127.0.0.1</domain>
-        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
+        <domain includeSubdomains="true">localhost</domain>
     </domain-config>
 </network-security-config>
