@@ -93,7 +93,9 @@ void main() {
     test('server addresses normalize to an origin; bad ones explain themselves', () {
       expect(DshRemoteRelayBackend.normalizeServer('remote.example.com/'), 'https://remote.example.com');
       expect(DshRemoteRelayBackend.normalizeServer('http://192.168.1.5:8080'), 'http://192.168.1.5:8080');
-      expect(() => DshRemoteRelayBackend.normalizeServer('http://example.com'), throwsA(isA<HostLinkError>()));
+      // 鲸鲸改造：明文 http 现在合法（自建服务器常常只有 IP:端口，没证书）。
+      expect(DshRemoteRelayBackend.normalizeServer('http://example.com'), 'http://example.com');
+      expect(DshRemoteRelayBackend.normalizeServer('http://1.192.79.205:41873'), 'http://1.192.79.205:41873');
       expect(() => DshRemoteRelayBackend.normalizeServer('https://x.com/path'), throwsA(isA<HostLinkError>()));
     });
 
