@@ -225,7 +225,8 @@ void main() {
     await frames(tester, 3);
     await tester.tap(find.text('自建服务器 · 邮箱登录'));
     await frames(tester);
-    await tester.enterText(find.byType(TextField).at(0), 'http://public.example.com');
+    // http 已被放行，这里换成一个真正非法的 scheme 来验证提示逻辑。
+    await tester.enterText(find.byType(TextField).at(0), 'ftp://public.example.com');
     await tester.enterText(find.byType(TextField).at(1), 'me@example.com');
     await tester.enterText(find.byType(TextField).at(2), 'pw');
     await tester.tap(find.widgetWithText(FilledButton, '登录'));
