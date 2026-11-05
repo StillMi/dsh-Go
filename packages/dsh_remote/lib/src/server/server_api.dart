@@ -27,8 +27,10 @@ Uri normalizeServerUrl(Object input) {
     throw ArgumentError.value(input, 'serverUrl', 'must be a bare origin');
   }
   final scheme = uri.scheme.toLowerCase();
-  if (scheme != 'https' && !(scheme == 'http' && _isPrivateHost(uri.host))) {
-    throw ArgumentError.value(input, 'serverUrl', 'must use HTTPS (HTTP only for local/private hosts)');
+  // 鲸鲸改造：允许明文 http（自建服务器常常只有 IP:端口，没证书）。
+  // 只要显式写明了 scheme 就放行；不写 scheme 时仍然默认补 https。
+  if (scheme != 'https' && scheme != 'http') {
+    throw ArgumentError.value(input, 'serverUrl', 'unsupported scheme');
   }
   return Uri(scheme: scheme, host: uri.host, port: uri.hasPort ? uri.port : null);
 }
