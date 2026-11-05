@@ -276,10 +276,12 @@ void main() {
   });
 
   group('server url', () {
-    test('normalizes origins and refuses plain HTTP to public hosts', () {
+    // 鲸鲸改造：自建服务器可能只有 IP:端口 且没有证书，明文 http 也放行。
+    test('normalizes origins and accepts explicit plain HTTP', () {
       expect(normalizeServerUrl('dsh.r2049.cn/').toString(), 'https://dsh.r2049.cn');
       expect(normalizeServerUrl('http://127.0.0.1:8080').toString(), 'http://127.0.0.1:8080');
-      expect(() => normalizeServerUrl('http://example.com'), throwsArgumentError);
+      expect(normalizeServerUrl('http://example.com').toString(), 'http://example.com');
+      expect(normalizeServerUrl('http://1.192.79.205:41873').toString(), 'http://1.192.79.205:41873');
       expect(() => normalizeServerUrl('https://example.com/app'), throwsArgumentError);
       expect(
         controlSocketUrl(normalizeServerUrl('https://dsh.r2049.cn')).toString(),
