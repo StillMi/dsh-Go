@@ -45,7 +45,9 @@ jobs:
 
       - name: build apk
         working-directory: app
-        run: flutter build apk --release
+        # 只打 arm64：工程默认按 ABI 拆包，产出 app-arm64-release.apk，
+        # flutter 会找不到它期望的 app-release.apk 而报 exit 1（本地实测）。
+        run: flutter build apk --release --target-platform android-arm64
 
       - name: show artifacts
         run: ls -lh app/build/app/outputs/flutter-apk/
