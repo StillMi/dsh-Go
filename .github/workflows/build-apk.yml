@@ -45,9 +45,16 @@ jobs:
 
       - name: build apk
         working-directory: app
-        # 只打 arm64：工程默认按 ABI 拆包，产出 app-arm64-release.apk，
-        # flutter 会找不到它期望的 app-release.apk 而报 exit 1（本地实测）。
-        run: flutter build apk --release --target-platform android-arm64
+        # 这个工程用 productFlavors 按 ABI 拆包（arm64 / x64），产物名是
+        # app-<flavor>-release.apk，flutter 找不到 app-release.apk 就会报 exit 1。
+        # 所以显式指定 flavor，并把产物改名回 app-release.apk 供 upload 用。
+        run: flutter build apk --release --flavor arm64 --target-platform android-arm64
+
+      - name: normalize apk name
+        working-directory: app
+        run: |
+          ls -lh build/app/outputs/flutter-apk/
+          cp build/app/outputs/flutter-apk/app-arm64-release.apk build/app/outputs/flutter-apk/app-release.apk
 
       - name: show artifacts
         run: ls -lh app/build/app/outputs/flutter-apk/
