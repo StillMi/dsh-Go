@@ -35,24 +35,6 @@ Uri normalizeServerUrl(Object input) {
   return Uri(scheme: scheme, host: uri.host, port: uri.hasPort ? uri.port : null);
 }
 
-bool _isPrivateHost(String host) {
-  if (host == 'localhost' || host == '127.0.0.1' || host == '::1' || host == '[::1]' || host == '10.0.2.2') {
-    return true;
-  }
-  final m = RegExp(r'^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$').firstMatch(host);
-  if (m == null) {
-    return host.endsWith('.local') || host.endsWith('.test') || host.endsWith('.localhost');
-  }
-  final a = int.parse(m.group(1)!);
-  final b = int.parse(m.group(2)!);
-  return a == 10 ||
-      a == 127 ||
-      (a == 172 && b >= 16 && b <= 31) ||
-      (a == 192 && b == 168) ||
-      (a == 169 && b == 254) ||
-      (a == 100 && b >= 64 && b <= 127);
-}
-
 /// `wss://<host>/ws/v1/connect` for [server].
 Uri controlSocketUrl(Uri server) =>
     server.replace(scheme: server.scheme == 'https' ? 'wss' : 'ws', path: '/ws/v1/connect');
